@@ -1,0 +1,11 @@
+name: poc_design_tokens
+description: Shared design tokens for the Server Driven UI POC.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter

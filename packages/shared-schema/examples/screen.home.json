@@ -1,0 +1,39 @@
+{
+  "screen": "home",
+  "version": "1.0.0",
+  "blocks": [
+    {
+      "type": "hero",
+      "props": {
+        "title": "Bem-vindo ao App",
+        "subtitle": "Essa tela veio do CMS"
+      }
+    },
+    {
+      "type": "text",
+      "props": {
+        "content": "Esse é um exemplo de conteúdo dinâmico.",
+        "variant": "default",
+        "href": "https://www.example.com"
+      }
+    },
+    {
+      "type": "card",
+      "props": {
+        "title": "Design System",
+        "description": "Angular e Flutter usam o mesmo contrato."
+      }
+    },
+    {
+      "type": "button",
+      "props": {
+        "label": "Começar",
+        "variant": "primary",
+        "action": {
+          "type": "navigate",
+          "target": "/home"
+        }
+      }
+    }
+  ]
+}

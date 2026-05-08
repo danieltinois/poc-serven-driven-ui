@@ -1,0 +1,11 @@
+{
+  "name": "@poc/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "files": [
+    "tokens.json",
+    "tokens.css",
+    "tokens.dart",
+    "lib/tokens.dart"
+  ]
+}
