@@ -1,0 +1,76 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Variaveis locais e segredos
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node / pnpm
+node_modules/
+**/node_modules/
+.pnpm-store/
+
+# Angular
+dist/
+**/dist/
+.angular/
+
+# TypeScript
+*.tsbuildinfo
+
+# Flutter / Dart
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+**/build/
+
+# Flutter generated platform files
+apps/flutter-app/.metadata
+
+# Android
+*.iml
+.gradle/
+**/.gradle/
+local.properties
+captures/
+
+# iOS / macOS
+Pods/
+**/Pods/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+xcuserdata/
+**/xcuserdata/
+
+# IDEs
+.idea/
+.vscode/
+!.vscode/extensions.json
+
+# Testes e coverage
+coverage/
+**/coverage/
+
+# Arquivos temporarios
+tmp/
+temp/
+.cache/

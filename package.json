@@ -1,0 +1,19 @@
+{
+  "name": "poc-server-driven-ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "POC didatica de Server Driven UI com CMS Angular, Mock API e Flutter.",
+  "scripts": {
+    "dev:api": "pnpm --filter @poc/mock-api dev",
+    "dev:cms": "pnpm --filter @poc/cms-angular start",
+    "dev": "pnpm --parallel --filter @poc/mock-api --filter @poc/cms-angular dev",
+    "generate:flutter-contracts": "pnpm --filter @poc/shared-schema generate:flutter",
+    "validate:screen": "pnpm --filter @poc/shared-schema validate",
+    "build:cms": "pnpm --filter @poc/cms-angular build",
+    "typecheck": "pnpm --recursive typecheck"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  }
+}
