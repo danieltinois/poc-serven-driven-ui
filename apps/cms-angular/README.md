@@ -21,6 +21,8 @@ http://localhost:4200
 
 O CMS busca `GET http://localhost:3333/screen/home`, transforma o payload em cards editaveis e renderiza um preview Angular da tela.
 
+Os campos dos blocos vem do catalogo compartilhado em `packages/shared-schema/src/block-catalog.ts`. Isso aproxima a POC de um desenho de producao: o pacote de contrato tambem informa como o CMS pode editar cada bloco.
+
 Fluxo:
 
 1. Edite os campos dos blocos.
@@ -35,7 +37,8 @@ Fluxo:
 
 - Design tokens via `@poc/design-tokens`.
 - Schema e tipos via `@poc/shared-schema`.
-- Nomes dos blocos: `hero`, `text`, `card`, `button`.
+- Catalogo editavel dos blocos via `@poc/shared-schema`.
+- Nomes dos blocos: `hero`, `text`, `card`, `button`, `video`.
 - Variantes, como `button.variant = primary | secondary`.
 - Estrutura do payload.
 

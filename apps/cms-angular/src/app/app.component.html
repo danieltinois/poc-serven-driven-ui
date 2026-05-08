@@ -45,7 +45,9 @@
           <label>
             <span>Novo bloco</span>
             <select [value]="selectedBlockType()" (change)="setSelectedBlockType($event)">
-              <option *ngFor="let type of blockTypes" [value]="type">{{ type }}</option>
+              <option *ngFor="let block of blockCatalog" [value]="block.type">
+                {{ block.label }}
+              </option>
             </select>
           </label>
           <button type="button" class="primary-button" (click)="addBlock()">Adicionar</button>
@@ -69,129 +71,44 @@
                   aria-label="Arrastar bloco"
                   (dragstart)="startBlockDrag(index, $event)"
                 >☰</span>
-                <span class="block-type-chip">{{ block.type }}</span>
+                <span class="block-type-chip">{{ blockLabel(block) }}</span>
               </div>
               <div class="block-heading">
                 <p class="block-index">Bloco {{ index + 1 }}</p>
-                <h3>{{ block.type }}</h3>
+                <h3>{{ blockDescription(block) }}</h3>
               </div>
               <div class="block-actions">
                 <button type="button" class="danger-button" (click)="removeBlock(index)">Remover</button>
               </div>
             </header>
 
-            <div class="block-fields" [ngSwitch]="block.type">
-              <ng-container *ngSwitchCase="'hero'">
-                <label>
-                  <span>Titulo</span>
-                  <input
-                    type="text"
-                    [value]="blockProps(block)['title'] ?? ''"
-                    (input)="updateBlockProp(index, 'title', $event)"
-                  />
-                </label>
-                <label>
-                  <span>Subtitulo</span>
-                  <input
-                    type="text"
-                    [value]="blockProps(block)['subtitle'] ?? ''"
-                    (input)="updateBlockProp(index, 'subtitle', $event)"
-                  />
-                </label>
-              </ng-container>
+            <div class="block-fields">
+              <label *ngFor="let field of fieldsFor(block)">
+                <span>{{ field.label }}</span>
 
-              <ng-container *ngSwitchCase="'text'">
-                <label>
-                  <span>Conteudo</span>
-                  <textarea
-                    [value]="blockProps(block)['content'] ?? ''"
-                    (input)="updateBlockProp(index, 'content', $event)"
-                  ></textarea>
-                </label>
-                <label>
-                  <span>Variante</span>
-                  <select
-                    [value]="blockProps(block)['variant'] ?? 'default'"
-                    (change)="updateBlockProp(index, 'variant', $event)"
-                  >
-                    <option value="default">default</option>
-                    <option value="link">link</option>
-                  </select>
-                </label>
-                <label *ngIf="blockProps(block)['variant'] === 'link'">
-                  <span>Href</span>
-                  <input
-                    type="url"
-                    [value]="blockProps(block)['href'] ?? ''"
-                    (input)="updateBlockProp(index, 'href', $event)"
-                  />
-                </label>
-              </ng-container>
+                <textarea
+                  *ngIf="field.kind === 'textarea'"
+                  [value]="fieldValue(block, field)"
+                  (input)="updateBlockField(index, field, $event)"
+                ></textarea>
 
-              <ng-container *ngSwitchCase="'card'">
-                <label>
-                  <span>Titulo</span>
-                  <input
-                    type="text"
-                    [value]="blockProps(block)['title'] ?? ''"
-                    (input)="updateBlockProp(index, 'title', $event)"
-                  />
-                </label>
-                <label>
-                  <span>Descricao</span>
-                  <textarea
-                    [value]="blockProps(block)['description'] ?? ''"
-                    (input)="updateBlockProp(index, 'description', $event)"
-                  ></textarea>
-                </label>
-              </ng-container>
+                <select
+                  *ngIf="field.kind === 'select'"
+                  [value]="fieldValue(block, field)"
+                  (change)="updateBlockField(index, field, $event)"
+                >
+                  <option *ngFor="let option of field.options" [value]="option">
+                    {{ option }}
+                  </option>
+                </select>
 
-              <ng-container *ngSwitchCase="'button'">
-                <label>
-                  <span>Label</span>
-                  <input
-                    type="text"
-                    [value]="blockProps(block)['label'] ?? ''"
-                    (input)="updateBlockProp(index, 'label', $event)"
-                  />
-                </label>
-                <label>
-                  <span>Variante</span>
-                  <select
-                    [value]="blockProps(block)['variant'] ?? 'primary'"
-                    (change)="updateBlockProp(index, 'variant', $event)"
-                  >
-                    <option value="primary">primary</option>
-                    <option value="secondary">secondary</option>
-                  </select>
-                </label>
-                <label>
-                  <span>Target</span>
-                  <input
-                    type="text"
-                    [value]="buttonActionTarget(block)"
-                    (input)="updateButtonActionTarget(index, $event)"
-                  />
-                </label>
-              </ng-container>
-
-              <ng-container *ngSwitchCase="'video'">
-                <label>
-                  <span>YouTube URL</span>
-                  <input
-                    type="url"
-                    [value]="blockProps(block)['videoUrl'] ?? ''"
-                    (input)="updateBlockProp(index, 'videoUrl', $event)"
-                  />
-                </label>
-                <label>
-                  <span>Descricao</span>
-                  <textarea
-                    [value]="blockProps(block)['content'] ?? ''"
-                    (input)="updateBlockProp(index, 'content', $event)"
-                  ></textarea>
-                </label>
-              </ng-container>
+                <input
+                  *ngIf="field.kind === 'text' || field.kind === 'url'"
+                  [type]="field.kind === 'url' ? 'url' : 'text'"
+                  [value]="fieldValue(block, field)"
+                  (input)="updateBlockField(index, field, $event)"
+                />
+              </label>
             </div>
           </article>
         </section>

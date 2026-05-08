@@ -83,3 +83,5 @@ export function formatZodError(error: z.ZodError): string[] {
     return `${path}: ${issue.message}`;
   });
 }
+
+export * from './block-catalog';

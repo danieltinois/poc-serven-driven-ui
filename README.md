@@ -10,6 +10,8 @@ Server Driven UI e uma abordagem em que o servidor entrega uma descricao da tela
 
 Nesta POC, o payload descreve blocos como `hero`, `text`, `card`, `video` e `button`. O Angular usa componentes Angular para preview. O Flutter usa widgets Flutter. Eles nao compartilham UI, apenas o contrato.
 
+Para aproximar de um desenho de producao, `packages/shared-schema` tambem contem `src/block-catalog.ts`, um catalogo com labels, campos editaveis e defaults. O CMS usa esse catalogo para montar formularios de blocos sem hardcodar cada campo na tela.
+
 ## Arquitetura
 
 ```text

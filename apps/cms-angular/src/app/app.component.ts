@@ -2,10 +2,13 @@ import { CommonModule } from "@angular/common";
 import { Component, signal } from "@angular/core";
 import { ZodError } from "zod";
 import {
-  blockTypes,
+  blockCatalog,
+  BlockFieldDefinition,
+  createDefaultBlock,
   DynamicScreen,
   DynamicBlock,
   formatZodError,
+  getBlockDefinition,
   validateDynamicScreen
 } from "@poc/shared-schema";
 import { DynamicScreenRendererComponent } from "./renderer/dynamic-screen-renderer.component";
@@ -20,7 +23,7 @@ const apiUrl = "http://localhost:3333/screen/home";
   styleUrl: "./app.component.css"
 })
 export class AppComponent {
-  blockTypes = blockTypes;
+  blockCatalog = blockCatalog;
   screen = signal<DynamicScreen | null>(null);
   selectedBlockType = signal<DynamicBlock["type"]>("text");
   draggedBlockIndex = signal<number | null>(null);
@@ -96,7 +99,7 @@ export class AppComponent {
   }
 
   addBlock() {
-    const block = this.createDefaultBlock(this.selectedBlockType());
+    const block = createDefaultBlock(this.selectedBlockType());
     this.patchScreen((screen) => {
       screen.blocks.push(block);
     });
@@ -153,47 +156,32 @@ export class AppComponent {
     this.dragOverBlockIndex.set(null);
   }
 
-  updateBlockProp(index: number, prop: string, event: Event) {
+  updateBlockField(index: number, field: BlockFieldDefinition, event: Event) {
     const value = (event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value;
 
     this.patchScreen((screen) => {
       const block = screen.blocks[index];
-      block.props = {
-        ...block.props,
-        [prop]: value
-      } as DynamicBlock["props"];
+      const props = { ...block.props } as Record<string, unknown>;
+      this.setPathValue(props, field.path, value);
+      block.props = props as DynamicBlock["props"];
     });
   }
 
-  updateButtonActionTarget(index: number, event: Event) {
-    const target = (event.target as HTMLInputElement).value;
-
-    this.patchScreen((screen) => {
-      const block = screen.blocks[index];
-      if (block.type !== "button") {
-        return;
-      }
-
-      block.props = {
-        ...block.props,
-        action: {
-          type: "navigate",
-          target
-        }
-      };
-    });
+  fieldsFor(block: DynamicBlock): readonly BlockFieldDefinition[] {
+    return getBlockDefinition(block.type).fields;
   }
 
-  blockProps(block: DynamicBlock): Record<string, unknown> {
-    return block.props as Record<string, unknown>;
+  blockLabel(block: DynamicBlock): string {
+    return getBlockDefinition(block.type).label;
   }
 
-  buttonActionTarget(block: DynamicBlock): string {
-    if (block.type !== "button") {
-      return "";
-    }
+  blockDescription(block: DynamicBlock): string {
+    return getBlockDefinition(block.type).description;
+  }
 
-    return block.props.action?.target ?? "";
+  fieldValue(block: DynamicBlock, field: BlockFieldDefinition): string {
+    const value = this.getPathValue(block.props as Record<string, unknown>, field.path);
+    return typeof value === "string" ? value : "";
   }
 
   private patchScreen(mutator: (screen: DynamicScreen) => void) {
@@ -213,52 +201,38 @@ export class AppComponent {
     return currentScreen;
   }
 
-  private createDefaultBlock(type: DynamicBlock["type"]): DynamicBlock {
-    switch (type) {
-      case "hero":
-        return {
-          type: "hero",
-          props: {
-            title: "Novo hero",
-            subtitle: "Subtitulo do hero"
-          }
-        };
-      case "text":
-        return {
-          type: "text",
-          props: {
-            content: "Novo texto",
-            variant: "default"
-          }
-        };
-      case "card":
-        return {
-          type: "card",
-          props: {
-            title: "Novo card",
-            description: "Descricao do card"
-          }
-        };
-      case "button":
-        return {
-          type: "button",
-          props: {
-            label: "Novo botao",
-            variant: "primary",
-            action: {
-              type: "navigate",
-              target: "/home"
-            }
-          }
-        };
-      case "video":
-        return {
-          type: "video",
-          props: {
-            videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            content: "Descricao do video"
-          }
-        };
+  private getPathValue(source: Record<string, unknown>, path: string): unknown {
+    return path.split(".").reduce<unknown>((current, part) => {
+      if (!current || typeof current !== "object") {
+        return undefined;
+      }
+
+      return (current as Record<string, unknown>)[part];
+    }, source);
+  }
+
+  private setPathValue(target: Record<string, unknown>, path: string, value: string) {
+    const parts = path.split(".");
+    let current = target;
+
+    parts.forEach((part, index) => {
+      if (index === parts.length - 1) {
+        current[part] = value;
+        return;
+      }
+
+      const next = current[part];
+      if (!next || typeof next !== "object") {
+        current[part] = {};
+      }
+      current = current[part] as Record<string, unknown>;
+    });
+
+    if (path === "action.target") {
+      target["action"] = {
+        type: "navigate",
+        ...target["action"] as Record<string, unknown>
+      };
     }
   }
 
