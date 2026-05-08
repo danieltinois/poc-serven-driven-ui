@@ -1,6 +1,6 @@
 # CMS Angular
 
-CMS didatico para editar uma tela Server Driven UI via JSON.
+CMS didatico para editar uma tela Server Driven UI por blocos.
 
 ## Como rodar
 
@@ -19,16 +19,17 @@ http://localhost:4200
 
 ## Como funciona
 
-O CMS busca `GET http://localhost:3333/screen/home`, mostra o JSON em um textarea e renderiza um preview Angular da tela.
+O CMS busca `GET http://localhost:3333/screen/home`, transforma o payload em cards editaveis e renderiza um preview Angular da tela.
 
 Fluxo:
 
-1. Edite o JSON no textarea.
-2. Clique em `Validar JSON`.
-3. O CMS valida usando `@poc/shared-schema`.
-4. O preview Angular atualiza.
-5. Clique em `Publicar`.
-6. O CMS envia `POST /screen/home` para a Mock API.
+1. Edite os campos dos blocos.
+2. Adicione, remova ou reordene blocos.
+3. Clique em `Validar tela`.
+4. O CMS valida usando `@poc/shared-schema`.
+5. O preview Angular atualiza automaticamente conforme os campos mudam.
+6. Clique em `Publicar`.
+7. O CMS envia `POST /screen/home` para a Mock API.
 
 ## O que esta sendo compartilhado
 

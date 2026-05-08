@@ -8,7 +8,7 @@ O objetivo nao e criar uma arquitetura perfeita de producao. O objetivo e provar
 
 Server Driven UI e uma abordagem em que o servidor entrega uma descricao da tela, geralmente em JSON. O cliente interpreta esse payload e decide quais componentes nativos renderizar.
 
-Nesta POC, o JSON descreve blocos como `hero`, `text`, `card` e `button`. O Angular usa componentes Angular para preview. O Flutter usa widgets Flutter. Eles nao compartilham UI, apenas o contrato.
+Nesta POC, o payload descreve blocos como `hero`, `text`, `card`, `video` e `button`. O Angular usa componentes Angular para preview. O Flutter usa widgets Flutter. Eles nao compartilham UI, apenas o contrato.
 
 ## Arquitetura
 
@@ -139,11 +139,11 @@ No Android emulator, a URL da API deve ser `http://10.0.2.2:3333/screen/home`. N
 1. Rode `pnpm dev:api`.
 2. Rode `pnpm dev:cms`.
 3. Rode o app Flutter.
-4. Edite o JSON no CMS.
+4. Edite os blocos no CMS.
 5. Altere o titulo do `hero`.
 6. Troque a ordem dos blocos no array `blocks`.
 7. Mude o `variant` do botao de `primary` para `secondary`.
-8. Clique em `Validar JSON`.
+8. Clique em `Validar tela`.
 9. Clique em `Publicar`.
 10. Recarregue o Flutter e veja a tela refletir a mudanca.
 

@@ -2,7 +2,9 @@ import { CommonModule } from "@angular/common";
 import { Component, signal } from "@angular/core";
 import { ZodError } from "zod";
 import {
+  blockTypes,
   DynamicScreen,
+  DynamicBlock,
   formatZodError,
   validateDynamicScreen
 } from "@poc/shared-schema";
@@ -18,8 +20,11 @@ const apiUrl = "http://localhost:3333/screen/home";
   styleUrl: "./app.component.css"
 })
 export class AppComponent {
+  blockTypes = blockTypes;
   screen = signal<DynamicScreen | null>(null);
-  editorValue = signal("");
+  selectedBlockType = signal<DynamicBlock["type"]>("text");
+  draggedBlockIndex = signal<number | null>(null);
+  dragOverBlockIndex = signal<number | null>(null);
   status = signal("Carregando tela da API...");
   isError = signal(false);
 
@@ -34,7 +39,6 @@ export class AppComponent {
       const screen = validateDynamicScreen(payload);
 
       this.screen.set(screen);
-      this.editorValue.set(JSON.stringify(screen, null, 2));
       this.status.set("Tela carregada da Mock API.");
       this.isError.set(false);
     } catch (error) {
@@ -43,27 +47,23 @@ export class AppComponent {
     }
   }
 
-  updateEditor(event: Event) {
-    this.editorValue.set((event.target as HTMLTextAreaElement).value);
-  }
-
-  validateJson() {
+  validateBlocks() {
     try {
-      const parsed = JSON.parse(this.editorValue());
-      const screen = validateDynamicScreen(parsed);
+      const currentScreen = this.requireScreen();
+      const screen = validateDynamicScreen(currentScreen);
 
       this.screen.set(screen);
-      this.status.set("JSON valido. O preview foi atualizado.");
+      this.status.set("Tela valida. O preview foi atualizado.");
       this.isError.set(false);
     } catch (error) {
-      this.status.set(`JSON invalido: ${this.errorMessage(error)}`);
+      this.status.set(`Tela invalida: ${this.errorMessage(error)}`);
       this.isError.set(true);
     }
   }
 
   async publish() {
     try {
-      const parsed = validateDynamicScreen(JSON.parse(this.editorValue()));
+      const parsed = validateDynamicScreen(this.requireScreen());
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -81,6 +81,184 @@ export class AppComponent {
     } catch (error) {
       this.status.set(`Erro ao publicar: ${this.errorMessage(error)}`);
       this.isError.set(true);
+    }
+  }
+
+  updateScreenField(field: "screen" | "version", event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.patchScreen((screen) => {
+      screen[field] = value;
+    });
+  }
+
+  setSelectedBlockType(event: Event) {
+    this.selectedBlockType.set((event.target as HTMLSelectElement).value as DynamicBlock["type"]);
+  }
+
+  addBlock() {
+    const block = this.createDefaultBlock(this.selectedBlockType());
+    this.patchScreen((screen) => {
+      screen.blocks.push(block);
+    });
+    this.status.set(`Bloco ${block.type} adicionado.`);
+    this.isError.set(false);
+  }
+
+  removeBlock(index: number) {
+    this.patchScreen((screen) => {
+      screen.blocks.splice(index, 1);
+    });
+    this.status.set("Bloco removido.");
+    this.isError.set(false);
+  }
+
+  startBlockDrag(index: number, event: DragEvent) {
+    this.draggedBlockIndex.set(index);
+    this.dragOverBlockIndex.set(index);
+    event.dataTransfer?.setData("text/plain", String(index));
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move";
+    }
+  }
+
+  enterBlockDropZone(index: number, event: DragEvent) {
+    event.preventDefault();
+    this.dragOverBlockIndex.set(index);
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "move";
+    }
+  }
+
+  dropBlock(targetIndex: number, event: DragEvent) {
+    event.preventDefault();
+    const sourceIndex = this.draggedBlockIndex();
+
+    if (sourceIndex === null || sourceIndex === targetIndex) {
+      this.clearDragState();
+      return;
+    }
+
+    this.patchScreen((screen) => {
+      const [block] = screen.blocks.splice(sourceIndex, 1);
+      screen.blocks.splice(targetIndex, 0, block);
+    });
+
+    this.status.set("Ordem dos blocos atualizada.");
+    this.isError.set(false);
+    this.clearDragState();
+  }
+
+  clearDragState() {
+    this.draggedBlockIndex.set(null);
+    this.dragOverBlockIndex.set(null);
+  }
+
+  updateBlockProp(index: number, prop: string, event: Event) {
+    const value = (event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value;
+
+    this.patchScreen((screen) => {
+      const block = screen.blocks[index];
+      block.props = {
+        ...block.props,
+        [prop]: value
+      } as DynamicBlock["props"];
+    });
+  }
+
+  updateButtonActionTarget(index: number, event: Event) {
+    const target = (event.target as HTMLInputElement).value;
+
+    this.patchScreen((screen) => {
+      const block = screen.blocks[index];
+      if (block.type !== "button") {
+        return;
+      }
+
+      block.props = {
+        ...block.props,
+        action: {
+          type: "navigate",
+          target
+        }
+      };
+    });
+  }
+
+  blockProps(block: DynamicBlock): Record<string, unknown> {
+    return block.props as Record<string, unknown>;
+  }
+
+  buttonActionTarget(block: DynamicBlock): string {
+    if (block.type !== "button") {
+      return "";
+    }
+
+    return block.props.action?.target ?? "";
+  }
+
+  private patchScreen(mutator: (screen: DynamicScreen) => void) {
+    const currentScreen = this.requireScreen();
+    const nextScreen = JSON.parse(JSON.stringify(currentScreen)) as DynamicScreen;
+    mutator(nextScreen);
+    this.screen.set(nextScreen);
+  }
+
+  private requireScreen(): DynamicScreen {
+    const currentScreen = this.screen();
+
+    if (!currentScreen) {
+      throw new Error("Tela ainda nao carregada.");
+    }
+
+    return currentScreen;
+  }
+
+  private createDefaultBlock(type: DynamicBlock["type"]): DynamicBlock {
+    switch (type) {
+      case "hero":
+        return {
+          type: "hero",
+          props: {
+            title: "Novo hero",
+            subtitle: "Subtitulo do hero"
+          }
+        };
+      case "text":
+        return {
+          type: "text",
+          props: {
+            content: "Novo texto",
+            variant: "default"
+          }
+        };
+      case "card":
+        return {
+          type: "card",
+          props: {
+            title: "Novo card",
+            description: "Descricao do card"
+          }
+        };
+      case "button":
+        return {
+          type: "button",
+          props: {
+            label: "Novo botao",
+            variant: "primary",
+            action: {
+              type: "navigate",
+              target: "/home"
+            }
+          }
+        };
+      case "video":
+        return {
+          type: "video",
+          props: {
+            videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            content: "Descricao do video"
+          }
+        };
     }
   }
 
