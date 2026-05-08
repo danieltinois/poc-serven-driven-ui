@@ -1,0 +1,8 @@
+<div class="screen">
+  <ng-container *ngFor="let block of blocks">
+    <poc-hero-block *ngIf="block.type === 'hero'" [props]="asHeroProps(block)" />
+    <poc-text-block *ngIf="block.type === 'text'" [props]="asTextProps(block)" />
+    <poc-card-block *ngIf="block.type === 'card'" [props]="asCardProps(block)" />
+    <poc-button-block *ngIf="block.type === 'button'" [props]="asButtonProps(block)" />
+  </ng-container>
+</div>

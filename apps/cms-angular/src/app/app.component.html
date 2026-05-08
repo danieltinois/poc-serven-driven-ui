@@ -1,0 +1,44 @@
+<main class="shell">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">POC Server Driven UI</p>
+      <h1>CMS Angular</h1>
+    </div>
+    <button type="button" class="ghost-button" (click)="loadScreen()">Recarregar API</button>
+  </header>
+
+  <section class="workspace">
+    <article class="panel">
+      <div class="panel-header">
+        <h2>Editor JSON</h2>
+        <div class="actions">
+          <button type="button" class="secondary-button" (click)="validateJson()">Validar JSON</button>
+          <button type="button" class="primary-button" (click)="publish()">Publicar</button>
+        </div>
+      </div>
+
+      <textarea
+        aria-label="Editor JSON da tela"
+        [value]="editorValue()"
+        (input)="updateEditor($event)"
+        spellcheck="false"
+      ></textarea>
+
+      <p class="status" [class.status-error]="isError()">{{ status() }}</p>
+    </article>
+
+    <article class="panel preview-panel">
+      <div class="panel-header">
+        <h2>Preview Angular</h2>
+        <span class="badge">Widgets web próprios</span>
+      </div>
+
+      <div class="phone-preview">
+        <poc-dynamic-screen-renderer
+          *ngIf="screen() as currentScreen"
+          [blocks]="currentScreen.blocks"
+        />
+      </div>
+    </article>
+  </section>
+</main>
