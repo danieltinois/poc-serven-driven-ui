@@ -10,7 +10,6 @@
     "./examples/screen.home.json": "./examples/screen.home.json"
   },
   "scripts": {
-    "generate:flutter": "tsx src/generate-flutter-contracts.ts",
     "validate": "tsx src/validate-example.ts",
     "typecheck": "tsc --noEmit"
   },

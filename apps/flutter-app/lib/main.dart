@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:poc_design_tokens/tokens.dart';
 
-import 'generated/sdui_contracts.dart';
+import 'models/dynamic_screen.dart';
 import 'renderer/dynamic_screen_renderer.dart';
 
 void main() {

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:poc_design_tokens/tokens.dart';
 
-import '../generated/sdui_contracts.dart';
-
 class ButtonBlock extends StatelessWidget {
-  const ButtonBlock({
-    required this.props,
-    super.key,
-  });
+  const ButtonBlock({required this.props, super.key});
 
-  final ButtonProps props;
+  final Map<String, dynamic> props;
 
   @override
   Widget build(BuildContext context) {
-    final isSecondary = props.variant == ButtonVariant.secondary;
+    final variant = props['variant'] as String? ?? 'primary';
+    final label = props['label'] as String? ?? '';
+    final isSecondary = variant == 'secondary';
 
     return SizedBox(
       width: double.infinity,
@@ -23,15 +20,14 @@ class ButtonBlock extends StatelessWidget {
           backgroundColor: isSecondary ? Colors.white : PocColors.primary,
           foregroundColor: isSecondary ? PocColors.primary : Colors.white,
           side: const BorderSide(color: PocColors.primary),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(PocRadius.md),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(PocRadius.md)),
         ),
         onPressed: () {
-          final target = props.action?.target ?? 'sem destino';
+          final action = props['action'] as Map<String, dynamic>?;
+          final target = action?['target'] as String? ?? 'sem destino';
           debugPrint('Acao do botao: $target');
         },
-        child: Text(props.label),
+        child: Text(label),
       ),
     );
   }

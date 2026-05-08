@@ -4,5 +4,6 @@
     <poc-text-block *ngIf="block.type === 'text'" [props]="asTextProps(block)" />
     <poc-card-block *ngIf="block.type === 'card'" [props]="asCardProps(block)" />
     <poc-button-block *ngIf="block.type === 'button'" [props]="asButtonProps(block)" />
+    <poc-video-block *ngIf="block.type === 'video'" [props]="asVideoProps(block)" />
   </ng-container>
 </div>

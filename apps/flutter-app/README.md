@@ -39,22 +39,10 @@ Para trocar, edite `screenUrl` em `lib/main.dart`.
 O app:
 
 1. Faz `GET /screen/home`.
-2. Converte o JSON para os models gerados em `lib/generated/sdui_contracts.dart`.
+2. Converte o JSON para models simples em `lib/models/dynamic_screen.dart`.
 3. Passa os blocos para `DynamicScreenRenderer`.
-4. O renderer faz switch pelos tipos gerados.
+4. O renderer faz switch por `type`.
 5. Cada bloco vira um widget Flutter nativo.
-
-## Contrato gerado
-
-O arquivo `lib/generated/sdui_contracts.dart` e gerado pelo pacote `@poc/shared-schema`.
-
-Na raiz do monorepo:
-
-```bash
-pnpm generate:flutter-contracts
-```
-
-Esse comando demonstra como o Flutter poderia receber enums e models a partir do contrato compartilhado. Mesmo assim, os widgets continuam sendo implementados no Flutter.
 
 ## Widgets
 

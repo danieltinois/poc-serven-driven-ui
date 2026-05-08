@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const blockTypes = ['hero', 'text', 'button', 'card'] as const;
+export const blockTypes = ['hero', 'text', 'button', 'card', 'video'] as const;
 export const buttonVariants = ['primary', 'secondary'] as const;
 export const textVariants = ['default', 'link'] as const;
 
@@ -43,11 +43,20 @@ export const buttonBlockSchema = z.object({
   }),
 });
 
+export const videoBlockSchema = z.object({
+  type: z.literal('video'),
+  props: z.object({
+    videoUrl: z.string().min(1),
+    content: z.string().min(1).optional(),
+  }),
+});
+
 export const dynamicBlockSchema = z.discriminatedUnion('type', [
   heroBlockSchema,
   textBlockSchema,
   cardBlockSchema,
   buttonBlockSchema,
+  videoBlockSchema,
 ]);
 
 export const dynamicScreenSchema = z.object({
@@ -60,6 +69,7 @@ export type HeroBlock = z.infer<typeof heroBlockSchema>;
 export type TextBlock = z.infer<typeof textBlockSchema>;
 export type CardBlock = z.infer<typeof cardBlockSchema>;
 export type ButtonBlock = z.infer<typeof buttonBlockSchema>;
+export type VideoBlock = z.infer<typeof videoBlockSchema>;
 export type DynamicBlock = z.infer<typeof dynamicBlockSchema>;
 export type DynamicScreen = z.infer<typeof dynamicScreenSchema>;
 

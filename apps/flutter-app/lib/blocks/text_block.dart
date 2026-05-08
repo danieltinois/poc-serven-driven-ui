@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:poc_design_tokens/tokens.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../generated/sdui_contracts.dart';
-
 class TextBlock extends StatelessWidget {
   const TextBlock({required this.props, super.key});
 
-  final TextProps props;
+  final Map<String, dynamic> props;
 
   Future<void> _openedLink(String href) async {
     final uri = Uri.parse(href);
@@ -16,11 +14,15 @@ class TextBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (props.variant == TextVariant.link) {
+    final variant = props['variant'] as String? ?? 'default';
+    final content = props['content'] as String? ?? '';
+    final href = props['href'] as String?;
+
+    if (variant == 'link') {
       return GestureDetector(
-        onTap: props.href == null ? null : () => _openedLink(props.href!),
+        onTap: href == null ? null : () => _openedLink(href),
         child: Text(
-          props.content,
+          content,
           style: const TextStyle(
             color: PocColors.primary,
             fontSize: PocTypography.bodySize,
@@ -32,7 +34,7 @@ class TextBlock extends StatelessWidget {
     }
 
     return Text(
-      props.content,
+      content,
       style: const TextStyle(color: PocColors.text, fontSize: PocTypography.bodySize, height: 1.55),
     );
   }

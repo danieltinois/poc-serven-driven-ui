@@ -50,4 +50,5 @@ Isso e proposital: compartilhar UI entre plataformas costuma misturar responsabi
 - `TextBlockComponent`
 - `CardBlockComponent`
 - `ButtonBlockComponent`
+- `VideoBlockComponent`
 - `DynamicScreenRendererComponent`

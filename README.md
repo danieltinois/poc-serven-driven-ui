@@ -134,22 +134,6 @@ flutter run
 
 No Android emulator, a URL da API deve ser `http://10.0.2.2:3333/screen/home`. No iOS simulator, use `http://localhost:3333/screen/home`. Isso esta documentado em `apps/flutter-app/README.md`.
 
-## Geracao Experimental Do Contrato Flutter
-
-Para mostrar como isso poderia evoluir fora de uma POC, o pacote `shared-schema` gera um contrato Dart simples:
-
-```bash
-pnpm generate:flutter-contracts
-```
-
-Saida:
-
-```text
-apps/flutter-app/lib/generated/sdui_contracts.dart
-```
-
-Esse arquivo contem enums, classes de props e models para o Flutter. O renderer e os widgets continuam manuais, porque a UI deve seguir nativa em cada plataforma.
-
 ## Fluxo Da Demo
 
 1. Rode `pnpm dev:api`.
@@ -194,12 +178,6 @@ Esse arquivo contem enums, classes de props e models para o Flutter. O renderer 
 - Adicionar Storybook.
 - Adicionar testes unitarios nos renderers.
 - Adicionar CI validando schemas e tokens.
-- Evoluir o gerador Dart para usar JSON Schema/OpenAPI ou uma pipeline mais robusta.
+- Avaliar geracao de models Dart via JSON Schema/OpenAPI quando a POC evoluir para producao.
 - Avaliar Style Dictionary para gerar tokens automaticamente.
 - Avaliar integracao com headless CMS real.
-
-## Como Apresentar Essa POC Para O Time
-
-A mensagem central e: nao estamos tentando compartilhar tela pronta entre web e mobile. Estamos compartilhando linguagem.
-
-O CMS define uma intencao de tela em JSON. A API garante que essa intencao respeita o contrato. O Flutter recebe o mesmo contrato e renderiza widgets nativos. Assim, produto e conteudo ganham flexibilidade, enquanto engenharia mantem controle sobre qualidade, design system e evolucao das plataformas.

@@ -25,6 +25,13 @@
       }
     },
     {
+      "type": "video",
+      "props": {
+        "videoUrl": "https://youtu.be/M07eIuhKZSw?si=v572g6QTaSjSA3pm",
+        "content": "Exemplo de bloco de video vindo do CMS. (esse conteudo é opcional)"
+      }
+    },
+    {
       "type": "button",
       "props": {
         "label": "Começar",

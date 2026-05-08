@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:poc_design_tokens/tokens.dart';
 
-import '../generated/sdui_contracts.dart';
-
 class CardBlock extends StatelessWidget {
   const CardBlock({
     required this.props,
     super.key,
   });
 
-  final CardProps props;
+  final Map<String, dynamic> props;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,7 @@ class CardBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            props.title,
+            props['title'] as String? ?? '',
             style: const TextStyle(
               color: PocColors.text,
               fontSize: 18,
@@ -33,7 +31,7 @@ class CardBlock extends StatelessWidget {
           ),
           const SizedBox(height: PocSpacing.xs),
           Text(
-            props.description,
+            props['description'] as String? ?? '',
             style: const TextStyle(
               color: PocColors.muted,
               fontSize: PocTypography.bodySize,

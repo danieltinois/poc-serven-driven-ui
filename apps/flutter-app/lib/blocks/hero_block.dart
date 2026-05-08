@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:poc_design_tokens/tokens.dart';
 
-import '../generated/sdui_contracts.dart';
-
 class HeroBlock extends StatelessWidget {
   const HeroBlock({
     required this.props,
     super.key,
   });
 
-  final HeroProps props;
+  final Map<String, dynamic> props;
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +21,17 @@ class HeroBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            props.title,
+            props['title'] as String? ?? '',
             style: const TextStyle(
               color: Colors.white,
               fontSize: PocTypography.titleSize,
               fontWeight: FontWeight.w800,
             ),
           ),
-          if (props.subtitle?.isNotEmpty == true) ...[
+          if ((props['subtitle'] as String?)?.isNotEmpty == true) ...[
             const SizedBox(height: PocSpacing.sm),
             Text(
-              props.subtitle!,
+              props['subtitle'] as String,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: PocTypography.bodySize,
