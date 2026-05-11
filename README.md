@@ -171,7 +171,7 @@ No Android emulator, a URL da API deve ser `http://10.0.2.2:3333/screen/home`. N
 - O armazenamento da Mock API e apenas em memoria.
 - Os tokens sao mantidos manualmente para fins didaticos.
 
-## Proximos Passos
+## Possíveis features
 
 - Adicionar versionamento de schema.
 - Adicionar feature flags.
